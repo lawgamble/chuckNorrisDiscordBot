@@ -3,16 +3,21 @@ package main
 import (
 	"fmt"
 	"goDiscordBots/goBotTemplate/fetch"
+	"log"
+	"os"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
 var i int
 
 func main() {
 
-	bot, err := discordgo.New("Bot " + "ODc0NDI1NjQ0MzM3OTkxNzMw.YRGyVw.zXnrGo8Y-ZQX51xbv8UFg_obLdE") //figure out how to get the token from .env
+	token := getBotToken()
+
+	bot, err := discordgo.New("Bot " + token) //figure out how to get the token from .env
 	if err != nil {
 		panic(err)
 	}
@@ -53,5 +58,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Content == "!chuck" {
 		fetch.GetChuckNorrisJoke(s, m)
 	}
+
+}
+
+func getBotToken() string {
+	err := godotenv.Load("../local.env")
+	if err != nil {
+		log.Fatalf("Some error occured. Err: %s", err)
+	}
+
+	return os.Getenv("TOKEN")
 
 }
